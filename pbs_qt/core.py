@@ -1,8 +1,9 @@
-"""Data-access bridge to the shared, deterministic backend core.
+"""Data-access bridge to the bundled, deterministic analytics core.
 
-Reuses ``source/fastapi/app`` (database, parsers, categorizer, analytics,
-transfers, service) directly. Each function opens its own short-lived SQLAlchemy
-session so nothing is shared across threads or widgets.
+The core (database, parsers, categorizer, analytics, transfers, service) is
+vendored under :mod:`pbs_qt._core`, so the desktop app is fully self-contained.
+Each function opens its own short-lived SQLAlchemy session so nothing is shared
+across threads or widgets.
 """
 
 from __future__ import annotations
@@ -12,19 +13,49 @@ import sys
 from datetime import date, datetime, time
 from typing import Any, Optional
 
-# Make the shared core importable: <repo>/source/fastapi
 _QT_DIR = os.path.dirname(os.path.abspath(__file__))
-_CORE_DIR = os.path.abspath(os.path.join(_QT_DIR, "..", "..", "fastapi"))
-if _CORE_DIR not in sys.path:
-    sys.path.insert(0, _CORE_DIR)
 
-from app import config as core_config  # noqa: E402
-from app import analytics as _analytics  # noqa: E402
-from app import parsers as _parsers  # noqa: E402  (registers bank parsers)
-from app.categorizer import CATEGORIES, DEFAULT_CATEGORY  # noqa: E402
-from app.database import Account, Category, SessionLocal, Transaction, init_db  # noqa: E402
-from app.parsers import base as _parser_base  # noqa: E402
-from app.service import ingest as _ingest  # noqa: E402
+
+def _platform_data_dir() -> str:
+    """Per-user writable data directory for packaged builds."""
+    if sys.platform.startswith("win"):
+        base = os.environ.get("APPDATA") or os.path.expanduser("~")
+        return os.path.join(base, "RoobaNote")
+    if sys.platform == "darwin":
+        return os.path.expanduser("~/Library/Application Support/RoobaNote")
+    base = os.environ.get("XDG_DATA_HOME") or os.path.expanduser("~/.local/share")
+    return os.path.join(base, "RoobaNote")
+
+
+def _resolve_data_dir() -> str:
+    """Where the app keeps its SQLite DB and staged statements.
+
+    Priority:
+    1. ``ROOBA_DATA_DIR`` environment variable (portable / override).
+    2. Packaged builds (PyInstaller etc.) → a per-user data directory, so the app
+       never needs write access to its install/bundle location.
+    3. Running from source → ``<qt6>/data`` so the desktop app stays self-contained.
+    """
+    env = os.environ.get("ROOBA_DATA_DIR")
+    if env:
+        return os.path.abspath(env)
+    if getattr(sys, "frozen", False):
+        return _platform_data_dir()
+    return os.path.abspath(os.path.join(_QT_DIR, "..", "data"))
+
+
+DATA_DIR = _resolve_data_dir()
+os.makedirs(DATA_DIR, exist_ok=True)
+# Must be set before the core imports so its config picks up the location.
+os.environ.setdefault("ROOBA_DATA_DIR", DATA_DIR)
+
+from ._core import config as core_config  # noqa: E402
+from ._core import analytics as _analytics  # noqa: E402
+from ._core import parsers as _parsers  # noqa: E402  (registers bank parsers)
+from ._core.categorizer import CATEGORIES, DEFAULT_CATEGORY  # noqa: E402
+from ._core.database import Account, Category, SessionLocal, Transaction, init_db  # noqa: E402
+from ._core.parsers import base as _parser_base  # noqa: E402
+from ._core.service import ingest as _ingest  # noqa: E402
 
 USER_ID = core_config.DEFAULT_USER_ID
 

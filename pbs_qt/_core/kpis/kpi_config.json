@@ -1,0 +1,43 @@
+{
+  "currency": "INR",
+  "savings_rate": { "good": 0.20, "warning": 0.10 },
+  "fixed_share": { "warning": 0.50, "bad": 0.65 },
+  "runway": { "good": 6, "warning": 3 },
+  "emergency_fund": { "good": 6, "warning": 3 },
+  "income_stability": { "good": 0.15, "warning": 0.35 },
+  "dti": { "good": 0.30, "warning": 0.40 },
+  "budget_progress": { "warning": 0.80 },
+  "cash_withdrawal": { "untracked_share": 0.15 },
+  "small_txn_threshold": 200,
+  "recurring": {
+    "min_occurrences": 3,
+    "interval_tolerance_days": 3,
+    "amount_tolerance_pct": 0.10,
+    "new_item_days": 60,
+    "price_increase_pct": 0.10,
+    "monthly_window": [28, 32],
+    "weekly_days": 7,
+    "yearly_window": [360, 370]
+  },
+  "budget_defaults": {},
+  "tooltips": {
+    "savings_rate": "(income - spending) / income, per month plus 3-mo rolling average. good ≥20%, warning 10-20%, bad <10%. Transfers excluded.",
+    "net_cash_flow": "Monthly income - spending, with a 3-mo rolling average. Negative months highlighted. Transfers excluded.",
+    "fixed_vs_variable": "Share of spending in fixed vs variable categories. warning if fixed share of income >50%, bad if >65%. Override per category.",
+    "essential_discretionary": "Spending split against a 50/30/20 benchmark (needs/wants/savings). Override essentiality per category.",
+    "recurring": "Debits grouped by normalized merchant with 3+ occurrences, consistent cadence and amount within +-10% of median.",
+    "runway": "current balance / avg monthly spending (last 3 months, transfers excluded). good ≥6, warning 3-6, bad <3 months.",
+    "category_share": "Percent share per category for the period plus month-over-month movers.",
+    "top_merchants": "Top 10 merchants by total spend and by transaction count.",
+    "budget": "actual vs budget per category with projected month-end spend. warning at 80% of budget, bad when over.",
+    "safe_to_spend": "(expected monthly income - committed fixed - spent so far this month) / days left in the month.",
+    "spend_day": "Average spend per day-of-month. 'Days until money runs out' = balance / avg daily spend over last 30 days.",
+    "weekday_weekend": "Average daily spend weekdays vs weekends and their ratio.",
+    "payment_mode": "Share of spending by mode (UPI/Card/ATM-Cash/NEFT-IMPS/Cheque/Other). Cash withdrawal share >15% flagged as untracked.",
+    "small_tx_leakage": "Total and count of debits below the threshold (default ₹200) as a share of total spending.",
+    "income_stability": "Coefficient of variation of monthly income (needs 3+ months). good <0.15, warning 0.15-0.35, bad >0.35.",
+    "debt_to_income": "total monthly EMI / monthly income. good <30%, warning 30-40%, bad >40%.",
+    "emergency_fund": "liquid balance / average monthly essential spending, in months. good ≥6, warning 3-6, bad <3.",
+    "fees_interest": "Sum of bank charges, late fees, card interest and GST detected by keywords."
+  }
+}

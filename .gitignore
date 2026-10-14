@@ -1,0 +1,52 @@
+# ---- Local application data (SQLite DB + staged statements) ----
+data/
+*.db
+*.sqlite
+*.sqlite3
+*.db-journal
+*.db-wal
+*.db-shm
+staging/
+
+# ---- Python bytecode / caches ----
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.eggs/
+
+# ---- Virtual environments ----
+.venv/
+venv/
+env/
+ENV/
+
+# ---- Test / lint / type caches ----
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+
+# ---- Build artifacts (PyInstaller, AppImage, etc.) ----
+build/
+dist/
+*.spec
+*.exe
+*.msi
+*.AppImage
+*.AppImage.zsync
+*.app/
+*.dmg
+*.deb
+*.rpm
+
+# ---- OS / editor cruft ----
+.DS_Store
+Thumbs.db
+desktop.ini
+.idea/
+.vscode/
+*.swp

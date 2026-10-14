@@ -1,0 +1,7 @@
+PySide6
+SQLAlchemy
+numpy
+pdfplumber
+xlrd
+pypdf
+pytest
